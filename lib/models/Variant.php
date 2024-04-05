@@ -19,6 +19,8 @@ use Kreatif\Model;
 
 class Variant extends Model
 {
+    use \Kreatif\Project\Traits\Variant;
+
     const TABLE = "rex_shop_product_has_feature";
 
     public static function getByVariantKey($key)

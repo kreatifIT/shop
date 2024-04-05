@@ -20,6 +20,8 @@ use Url\Url;
 
 class Product extends Model
 {
+    use \Kreatif\Project\Traits\Product;
+
     const TABLE        = 'rex_shop_product';
     const URL_PARAMKEY = 'product_id';
 
