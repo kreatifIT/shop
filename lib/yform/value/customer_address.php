@@ -88,8 +88,8 @@ class rex_yform_value_customer_address extends rex_yform_value_abstract
             $invoiceAddr  = $order->getInvoiceAddress();
             $shippingAddr = $order->getShippingAddress();
             $nameChunks   = [
-                $invoiceAddr->getName(null, true),
-                $shippingAddr->getName(null, true),
+                $invoiceAddr ? $invoiceAddr->getName(null, true) : ' - ',
+                $shippingAddr ? $shippingAddr->getName(null, true) : ' - ',
             ];
         }
         return implode(' | ', array_unique(array_filter($nameChunks)));
