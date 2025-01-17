@@ -12,6 +12,7 @@
  *
  *
  * Reference:
+ * https://www.fatturapa.gov.it/it/norme-e-regole/documentazione-fattura-elettronica/formato-fatturapa/
  * https://www.fatturapa.gov.it/export/fatturazione/sdi/fatturapa/v1.2.1/Rappresentazione_tabellare_del_tracciato_FatturaPA_versione_1.2.1.pdf
  *
  * Test-Tool:
@@ -252,15 +253,22 @@ class XMLInvoice
         $DatiRiepilogo->addChild("Imposta", number_format($this->data["sales_totale_vat"], 2, ".", ""));
         $DatiRiepilogo->addChild("EsigibilitaIVA", $this->data["document_vat_type"]);
 
-        //                $DatiPagamento = $FatturaElettronicaBody->addChild("DatiPagamento");
-        //                    $DatiPagamento->addChild("CondizioniPagamento",$this->data["payment_conditions"]);
-        //                    $DettaglioPagamento = $DatiPagamento->addChild("DettaglioPagamento");
-        //                    $DettaglioPagamento->addChild("ModalitaPagamento",$this->data["payment_method"]);
-        //                    $DettaglioPagamento->addChild("DataScadenzaPagamento",$this->data["payment_due_date"]);
-        //                    $DettaglioPagamento->addChild("ImportoPagamento",$this->data["sales_totale"]);
-        //                    $DettaglioPagamento->addChild("IBAN",$this->data["paypment_cc_iban"]);
-        //                    $DettaglioPagamento->addChild("ABI",$this->data["paypment_cc_abi"]);
-        //                    $DettaglioPagamento->addChild("CAB",$this->data["paypment_cc_cab"]);
+        if (!empty($this->data["payment_conditions"])) {
+            $DatiPagamento = $FatturaElettronicaBody->addChild("DatiPagamento");
+            $DatiPagamento->addChild("CondizioniPagamento",$this->data["payment_conditions"]);
+            $DettaglioPagamento = $DatiPagamento->addChild("DettaglioPagamento");
+            $DettaglioPagamento->addChild("ModalitaPagamento",$this->data["payment_method"]);
+            $DettaglioPagamento->addChild("DataScadenzaPagamento",$this->data["payment_due_date"]);
+            $DettaglioPagamento->addChild("ImportoPagamento",$this->data["sales_totale"]);
+            $DettaglioPagamento->addChild("IBAN",$this->data["paypment_cc_iban"]);
+            if (!empty($this->data["paypment_cc_abi"])) {
+                $DettaglioPagamento->addChild("ABI",$this->data["paypment_cc_abi"]);
+            }
+            if (!empty($this->data["paypment_cc_cab"])) {
+                $DettaglioPagamento->addChild("CAB",$this->data["paypment_cc_cab"]);
+            }
+            $DettaglioPagamento->addChild("IstitutoFinanziario",$this->data["paypment_institute"] ?? "");
+        }
 
         if ($this->data["attachment_path"]) {
             $Allegati = $FatturaElettronicaBody->addChild("Allegati");
