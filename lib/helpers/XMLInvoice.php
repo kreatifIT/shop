@@ -150,7 +150,9 @@ class XMLInvoice
         $IdTrasmittente->addChild("IdPaese", $this->data["transmitter_country_code"]);
         $IdTrasmittente->addChild("IdCodice", $this->data["transmitter_vat_number"]);
 
-        $DatiTrasmissione->addChild("ProgressivoInvio", is_int($this->data["transmitter_progressiv_code"]) ? str_pad($this->data["transmitter_progressiv_code"], 10, '0', STR_PAD_LEFT) : $this->data["transmitter_progressiv_code"]);
+        $DatiTrasmissione->addChild("ProgressivoInvio",
+            is_int($this->data["transmitter_progressiv_code"]) ? str_pad($this->data["transmitter_progressiv_code"], 10, '0',
+                STR_PAD_LEFT) : $this->data["transmitter_progressiv_code"]);
         $this->dataTrasmissioneValue = $this->data["transmitter_format"] != "" ? $this->data["transmitter_format"] : ($this->data["company_vat_number"] != "" ? "FPA12" : "FPR12");
         $DatiTrasmissione->addChild("FormatoTrasmissione", $this->dataTrasmissioneValue);
         $codiceDestinatarioValue = $this->data["transmitter_code_receiver"];
@@ -184,12 +186,12 @@ class XMLInvoice
         $CedenteSede->addChild("Provincia", $this->data["company_head_quarter_province"]);
         $CedenteSede->addChild("Nazione", $this->data["company_head_quarter_nation"]);
 
-//        $IscrizioneREA = $CedentePrestatore->addChild("IscrizioneREA");
-//        $IscrizioneREA->addChild("Ufficio", $this->data["company_rea_office"]);
-//        $IscrizioneREA->addChild("NumeroREA", $this->data["company_rea_no"]);
-//        $IscrizioneREA->addChild("CapitaleSociale", number_format($this->data["company_rea_capital"], 2, ".", ""));
-//        $IscrizioneREA->addChild("SocioUnico", $this->data["company_rea_single_shareholder"]);
-//        $IscrizioneREA->addChild("StatoLiquidazione", $this->data["company_rea_liquidation"]);
+        //        $IscrizioneREA = $CedentePrestatore->addChild("IscrizioneREA");
+        //        $IscrizioneREA->addChild("Ufficio", $this->data["company_rea_office"]);
+        //        $IscrizioneREA->addChild("NumeroREA", $this->data["company_rea_no"]);
+        //        $IscrizioneREA->addChild("CapitaleSociale", number_format($this->data["company_rea_capital"], 2, ".", ""));
+        //        $IscrizioneREA->addChild("SocioUnico", $this->data["company_rea_single_shareholder"]);
+        //        $IscrizioneREA->addChild("StatoLiquidazione", $this->data["company_rea_liquidation"]);
 
         $CessionarioCommittente    = $FatturaElettronicaHeader->addChild("CessionarioCommittente");
         $CessionarioDatiAnagrafici = $CessionarioCommittente->addChild("DatiAnagrafici");
@@ -218,10 +220,10 @@ class XMLInvoice
             $TerzoIntermediarioIdFiscaleIVA       = $TerzoIntermediarioDatiAnagrafici->addChild("IdFiscaleIVA");
             $TerzoIntermediarioIdFiscaleIVA->addChild("IdPaese", $this->data["third_party_country_code"]);
             $TerzoIntermediarioIdFiscaleIVA->addChild("IdCodice", $this->data["third_party_vat_number"]);
-    //        $TerzoIntermediarioDatiAnagrafici->addChild("CodiceFiscale", $this->data["receiver_private_vat_number"]);
+            //        $TerzoIntermediarioDatiAnagrafici->addChild("CodiceFiscale", $this->data["receiver_private_vat_number"]);
             $TerzoIntermediarioAnagrafica = $TerzoIntermediarioDatiAnagrafici->addChild("Anagrafica");
             $TerzoIntermediarioAnagrafica->addChild("Denominazione", $this->data["third_party_name"]);
-            
+
             $FatturaElettronicaHeader->addChild("SoggettoEmittente", $this->data["third_party_code"]);
         }
 
@@ -255,18 +257,24 @@ class XMLInvoice
 
         if (!empty($this->data["payment_conditions"])) {
             $DatiPagamento = $FatturaElettronicaBody->addChild("DatiPagamento");
-            $DatiPagamento->addChild("CondizioniPagamento",$this->data["payment_conditions"]);
+            $DatiPagamento->addChild("CondizioniPagamento", $this->data["payment_conditions"]);
             $DettaglioPagamento = $DatiPagamento->addChild("DettaglioPagamento");
-            $DettaglioPagamento->addChild("ModalitaPagamento",$this->data["payment_method"]);
-            $DettaglioPagamento->addChild("DataScadenzaPagamento",$this->data["payment_due_date"]);
+            $DettaglioPagamento->addChild("ModalitaPagamento", $this->data["payment_method"]);
+            $DettaglioPagamento->addChild("DataScadenzaPagamento", $this->data["payment_due_date"]);
             $DettaglioPagamento->addChild("ImportoPagamento", number_format($this->data["sales_totale"], 2, '.', ''));
-            $DettaglioPagamento->addChild("IstitutoFinanziario", strip_tags(strtr($this->data["paypment_institute"], ['<br/>' => ' ', '<br>' => ' ', '<br />' => ' '])));
+            $DettaglioPagamento->addChild("IstitutoFinanziario", strip_tags(strtr($this->data["paypment_institute"], [
+                "\n"     => ' ',
+                "\r"     => ' ',
+                '<br/>'  => ' ',
+                '<br>'   => ' ',
+                '<br />' => ' ',
+            ])));
             $DettaglioPagamento->addChild("IBAN", $this->data["paypment_cc_iban"]);
             if (!empty($this->data["paypment_cc_abi"])) {
-                $DettaglioPagamento->addChild("ABI",$this->data["paypment_cc_abi"]);
+                $DettaglioPagamento->addChild("ABI", $this->data["paypment_cc_abi"]);
             }
             if (!empty($this->data["paypment_cc_cab"])) {
-                $DettaglioPagamento->addChild("CAB",$this->data["paypment_cc_cab"]);
+                $DettaglioPagamento->addChild("CAB", $this->data["paypment_cc_cab"]);
             }
         }
 
