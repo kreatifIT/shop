@@ -260,8 +260,8 @@ class XMLInvoice
             $DettaglioPagamento->addChild("ModalitaPagamento",$this->data["payment_method"]);
             $DettaglioPagamento->addChild("DataScadenzaPagamento",$this->data["payment_due_date"]);
             $DettaglioPagamento->addChild("ImportoPagamento", number_format($this->data["sales_totale"], 2, '.', ''));
-            $DettaglioPagamento->addChild("IstitutoFinanziario",$this->data["paypment_institute"] ?? "");
-            $DettaglioPagamento->addChild("IBAN", strip_tags(strtr($this->data["paypment_cc_iban"], ['<br/>' => ' ', '<br>' => ' ', '<br />' => ' '])));
+            $DettaglioPagamento->addChild("IstitutoFinanziario", strip_tags(strtr($this->data["paypment_institute"], ['<br/>' => ' ', '<br>' => ' ', '<br />' => ' '])));
+            $DettaglioPagamento->addChild("IBAN", $this->data["paypment_cc_iban"]);
             if (!empty($this->data["paypment_cc_abi"])) {
                 $DettaglioPagamento->addChild("ABI",$this->data["paypment_cc_abi"]);
             }
